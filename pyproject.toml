@@ -2,6 +2,8 @@
 name = "athena-boilerplate"
 version = "1.0.0"
 description = "FastAPI boilerplate"
+authors = ["Mateus Cardoso <mateuscardosogs@gmail.com>"]
+license = "MIT"
 readme = "README.md"
 packages = [{ include = "athena_boilerplate" }]
 
