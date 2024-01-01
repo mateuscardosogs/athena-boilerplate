@@ -1350,6 +1350,26 @@ And for the worker:
 poetry run arq src.app.worker.WorkerSettings
 ```
 
+### 5.14 Create Application
+If you want to stop tables from being created every time you run the api, you should disable this here:
+```python
+# app/main.py
+
+from .api import router
+from .core.config import settings
+from .core.setup import create_application
+
+# create_tables_on_start defaults to True
+app = create_application(router=router, settings=settings, create_tables_on_start=False)
+```
+
+This `create_application` function is defined in `app/core/setup.py`, and it's a flexible way to configure the behavior of your application.
+
+A few examples:
+- Deactivate or password protect /docs
+- Add client-side cache middleware
+- Add Startup and Shutdown event handlers for cache, queue and rate limit
+
 ## 6. Running in Production
 ### 6.1 Uvicorn Workers with Gunicorn
 In production you may want to run using gunicorn to manage uvicorn workers:
@@ -1396,26 +1416,6 @@ CMD ["gunicorn", "app.main:app", "-w", "4", "-k", "uvicorn.workers.UvicornWorker
 
 > [!CAUTION]
 > Do not forget to set the `ENVIRONMENT` in `.env` to `production` unless you want the API docs to be public.
-
-### 5.14 Create Application
-If you want to stop tables from being created every time you run the api, you should disable this here:
-```python
-# app/main.py
-
-from .api import router
-from .core.config import settings
-from .core.setup import create_application
-
-# create_tables_on_start defaults to True
-app = create_application(router=router, settings=settings, create_tables_on_start=False)
-```
-
-This `create_application` function is defined in `app/core/setup.py`, and it's a flexible way to configure the behavior of your application.
-
-A few examples:
-- Deactivate or password protect /docs
-- Add client-side cache middleware
-- Add Startup and Shutdown event handlers for cache, queue and rate limit
 
 ### 6.2 Running with NGINX
 NGINX is a high-performance web server, known for its stability, rich feature set, simple configuration, and low resource consumption. NGINX acts as a reverse proxy, that is, it receives client requests, forwards them to the FastAPI server (running via Uvicorn or Gunicorn), and then passes the responses back to the clients.
